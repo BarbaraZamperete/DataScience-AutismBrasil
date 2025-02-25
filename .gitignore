@@ -1,0 +1,56 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# Virtual environments
+venv/
+env/
+.env/
+.venv/
+
+# IDEs and editors
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb
+
+# Logs e arquivos temporários
+*.log
+logs/
+temp/
+tmp/
+
+# Arquivos de cache
+.cache/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Arquivos de configuração local
+.env.local
+config.local.py
+
+# Outros
+*.bak
+*.tmp
+*.temp
+
+# NÃO ignore estes arquivos (necessários para o Streamlit)
+!requirements.txt
+!Procfile
+!setup.sh
+!.streamlit/config.toml
+!modelos/*.pkl
+!modelos/*.joblib
+!data/*.csv
