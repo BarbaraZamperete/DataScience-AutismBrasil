@@ -333,201 +333,121 @@ def main():
             # Todos os gráficos anteriores aqui...
             
     with tab2:
-        st.subheader("🤖 Predições com Machine Learning")
-        st.write("""
-        Faça previsões usando nossos modelos treinados de Machine Learning.
-        Preencha os dados abaixo para obter previsões personalizadas.
-        """)
+        st.header("Predições com Modelos de Machine Learning")
         
-        # Primeiro, verificar se os modelos estão treinados
-        try:
-            modelo = ModeloAutismo()
-            modelo.carregar_modelos()
-            modelos_treinados = True
-        except Exception as e:
-            modelos_treinados = False
-            st.warning("Os modelos ainda não foram treinados.")
-            if st.button("Treinar Modelos"):
-                try:
-                    with st.spinner("Treinando modelos... Isso pode levar alguns minutos."):
-                        if treinar_e_salvar_modelos():
-                            st.success("✅ Modelos treinados com sucesso!")
-                            st.rerun()
-                        else:
-                            st.error("❌ Erro ao treinar modelos. Verifique os logs.")
-                except Exception as e:
-                    st.error(f"❌ Erro durante o treinamento: {str(e)}")
-                    st.stop()
-            st.stop()
-        
-        # Se os modelos estiverem treinados, mostrar o formulário
-        if modelos_treinados:
-            col1, col2 = st.columns(2)
+        with st.expander("ℹ️ Informações sobre os Modelos", expanded=False):
+            st.markdown("""
+            ### Modelos de Predição
             
-            with col1:
-                idade = st.number_input("Idade", min_value=5, max_value=45, value=25)
-                ano_diagnostico = st.number_input("Ano do Diagnóstico", min_value=2005, max_value=2025, value=2020)
-                regiao = st.selectbox("Região", options=["Norte", "Nordeste", "Centro-Oeste", "Sudeste", "Sul"])
-                zona = st.selectbox("Zona", options=["Urbana", "Rural"])
-                
-            with col2:
-                renda_familiar = st.selectbox("Renda Familiar", options=["Baixa", "Média", "Alta"])
-                acesso_servicos = st.selectbox("Acesso a Serviços", options=["Sim", "Não"])
-                tratamento = st.selectbox("Tipo de Tratamento Atual", options=["Terapias", "Medicamentos", "Ambos"])
+            1. **Número de Consultas Médicas**
+               - Prevê quantas consultas um paciente realizará no ano
+               - Usa Random Forest e Regressão Linear
+            
+            2. **Demanda Futura por Serviços**
+               - Prevê a demanda total por região e ano
+               - Considera tendências históricas
+               - Usa Random Forest e Regressão Linear
+            
+            3. **Necessidade de Medicamentos**
+               - Prevê a probabilidade de necessitar medicamentos
+               - Usa Random Forest e Regressão Logística
+            
+            > 💡 **Nota:** Os modelos são atualizados periodicamente com novos dados
+            """)
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            idade = st.number_input("Idade do Paciente", min_value=0, max_value=100, value=30)
+            ano_diagnostico = st.number_input("Ano do Diagnóstico", min_value=2000, max_value=2030, value=2024)
+            regiao = st.selectbox("Região", ["Norte", "Nordeste", "Centro-Oeste", "Sudeste", "Sul"])
+        
+        with col2:
+            renda = st.selectbox("Renda Familiar", ["Baixa", "Média", "Alta"])
+            acesso = st.selectbox("Acesso a Serviços", ["Sim", "Não"])
+            zona = st.selectbox("Zona", ["Urbana", "Rural"])
+            tratamento = st.selectbox("Tratamento", ["Terapias", "Medicamentos", "Ambos"])
 
-            # Botão para fazer previsões
-            if st.button("Fazer Previsões"):
+        if st.button("Realizar Predições", type="primary"):
+            with st.spinner("Realizando predições..."):
                 try:
-                    with st.spinner("Calculando predições..."):
-                        # Preparar dados de entrada
-                        dados_entrada = {
-                            'Idade': idade,
-                            'Ano_Diagnostico': ano_diagnostico,
-                            'Regiao': regiao,
-                            'Renda_Familiar': renda_familiar,
-                            'Acesso_a_Servicos': acesso_servicos,
-                            'Zona': zona,
-                            'Tratamento': tratamento
-                        }
+                    modelo = ModeloAutismo()
+                    modelo.carregar_modelos()
+                    
+                    dados_entrada = {
+                        "Idade": idade,
+                        "Ano_Diagnostico": ano_diagnostico,
+                        "Regiao": regiao,
+                        "Renda_Familiar": renda,
+                        "Acesso_a_Servicos": acesso,
+                        "Zona": zona,
+                        "Tratamento": tratamento
+                    }
+                    
+                    resultados = modelo.fazer_predicoes(dados_entrada)
+                    
+                    # Criar três colunas para os resultados
+                    col1, col2, col3 = st.columns(3)
+                    
+                    with col1:
+                        st.info("##### Consultas Previstas")
+                        consultas_rf = resultados['consultas']['random_forest']
+                        consultas_lr = resultados['consultas']['regressao_linear']
+                        media_consultas = (consultas_rf + consultas_lr) / 2
+                        st.metric("Média de Consultas/Ano", f"{media_consultas:.1f}")
+                        st.caption(f"Random Forest: {consultas_rf:.1f}")
+                        st.caption(f"Regressão Linear: {consultas_lr:.1f}")
+                    
+                    with col2:
+                        st.info("##### Demanda Futura")
+                        demanda_rf = resultados['demanda_futura']['random_forest']
+                        demanda_lr = resultados['demanda_futura']['regressao_linear']
+                        media_demanda = (demanda_rf + demanda_lr) / 2
+                        st.metric("Demanda Total na Região", f"{media_demanda:.0f}")
+                        st.caption(f"Random Forest: {demanda_rf:.0f}")
+                        st.caption(f"Regressão Linear: {demanda_lr:.0f}")
+                    
+                    with col3:
+                        st.info("##### Probabilidade de Medicamentos")
+                        prob_rf = resultados['medicamentos']['random_forest']
+                        prob_lr = resultados['medicamentos']['regressao_logistica']
+                        media_prob = (prob_rf + prob_lr) / 2
+                        st.metric("Probabilidade", f"{media_prob:.1%}")
+                        st.caption(f"Random Forest: {prob_rf:.1%}")
+                        st.caption(f"Regressão Logística: {prob_lr:.1%}")
+                    
+                    # Adicionar gráfico de tendência de demanda
+                    if st.checkbox("Ver Tendência de Demanda"):
+                        anos = list(range(ano_diagnostico, ano_diagnostico + 5))
+                        demanda_futura = []
                         
-                        # Fazer predições
-                        predicoes = modelo.fazer_predicoes(dados_entrada)
+                        for ano in anos:
+                            dados_temp = dados_entrada.copy()
+                            dados_temp['Ano_Diagnostico'] = ano
+                            res = modelo.fazer_predicoes(dados_temp)
+                            demanda_futura.append(
+                                (res['demanda_futura']['random_forest'] + 
+                                 res['demanda_futura']['regressao_linear']) / 2
+                            )
                         
-                        st.success("✨ Predições calculadas com sucesso!")
+                        fig = go.Figure()
+                        fig.add_trace(go.Scatter(
+                            x=anos,
+                            y=demanda_futura,
+                            mode='lines+markers',
+                            name='Demanda Prevista'
+                        ))
                         
-                        # Exibir resultados em containers separados
-                        st.markdown("### 📊 Resultados das Predições")
-                        
-                        # 1. Número de Consultas
-                        with st.container():
-                            st.subheader("1️⃣ Número Previsto de Consultas por Ano")
-                            col1, col2 = st.columns(2)
-                            with col1:
-                                st.metric("Random Forest (Otimizado)", 
-                                        predicoes['consultas']['random_forest'])
-                            with col2:
-                                st.metric("Regressão Linear (Baseline)", 
-                                        predicoes['consultas']['regressao_linear'])
-                            
-                            st.markdown("""
-                            **Interpretação:**
-                            - Os valores representam a previsão do número de consultas anuais
-                            - Random Forest é o modelo principal, otimizado para maior precisão
-                            - Regressão Linear serve como modelo de comparação
-                            """)
-                        
-                        # 2. Probabilidade de Medicamentos
-                        with st.container():
-                            st.subheader("2️⃣ Análise da Necessidade de Medicamentos")
-                            col1, col2 = st.columns(2)
-                            with col1:
-                                prob_rf = predicoes['medicamentos']['random_forest']
-                                st.metric("Random Forest (Otimizado)", 
-                                        "Necessário" if prob_rf > 0.5 else "Não Necessário",
-                                        f"Confiança: {prob_rf*100:.1f}%")
-                            with col2:
-                                prob_lr = predicoes['medicamentos']['regressao_logistica']
-                                st.metric("Regressão Logística (Baseline)", 
-                                        "Necessário" if prob_lr > 0.5 else "Não Necessário",
-                                        f"Confiança: {prob_lr*100:.1f}%")
-                            
-                            st.markdown("""
-                            **Interpretação:**
-                            - A análise indica se há indicação para uso de medicamentos
-                            - A confiança mostra o grau de certeza da previsão
-                            - Esta é apenas uma sugestão baseada em dados históricos
-                            - A decisão final deve ser feita por profissionais de saúde
-                            """)
-                        
-                        st.info("""
-                        💡 **Nota Importante:**
-                        - Estas previsões são baseadas em diferentes modelos de machine learning
-                        - Para cada tarefa, comparamos um modelo otimizado com um modelo baseline
-                        - A otimização foi feita usando GridSearchCV com validação cruzada
-                        - Os resultados são sugestões baseadas em padrões históricos
-                        - Sempre consulte profissionais de saúde para decisões importantes
-                        """)
-                        
-                        # Nova seção: Análise de Desempenho dos Modelos
-                        st.markdown("### 📈 Análise de Desempenho dos Modelos")
-                        
-                        # Pergunta 1: Número de Consultas
-                        with st.expander("📊 Desempenho - Previsão de Número de Consultas"):
-                            col1, col2 = st.columns(2)
-                            with col1:
-                                st.markdown("**Antes da Otimização:**")
-                                st.metric("MAE", "2.36")
-                                st.metric("MSE", "7.41")
-                            with col2:
-                                st.markdown("**Depois da Otimização:**")
-                                st.metric("MAE", "2.47")
-                                st.metric("MSE", "8.40")
-                            
-                            st.markdown("""
-                            **Interpretação:**
-                            - O modelo após otimização apresentou um leve aumento no erro
-                            - Isso pode indicar que o modelo original estava mais generalizado
-                            - É importante monitorar para evitar overfitting
-                            """)
-                        
-                        # Pergunta 2: Tipo de Serviço
-                        with st.expander("📊 Desempenho - Previsão de Tipo de Serviço"):
-                            col1, col2 = st.columns(2)
-                            with col1:
-                                st.markdown("**Antes da Otimização:**")
-                                st.metric("Acurácia", "0.64")
-                            with col2:
-                                st.markdown("**Depois da Otimização:**")
-                                st.metric("Acurácia", "0.785")
-                            
-                            st.markdown("""
-                            **Interpretação:**
-                            - Melhoria significativa na acurácia (+14.5%)
-                            - A otimização ajudou o modelo a entender melhor os padrões
-                            - Resultado promissor para previsão de demanda de serviços
-                            """)
-                        
-                        # Pergunta 3: Necessidade de Medicamentos
-                        with st.expander("📊 Desempenho - Previsão de Necessidade de Medicamentos"):
-                            col1, col2 = st.columns(2)
-                            with col1:
-                                st.markdown("**Antes da Otimização:**")
-                                st.metric("Acurácia", "0.43")
-                            with col2:
-                                st.markdown("**Depois da Otimização:**")
-                                st.metric("Acurácia", "0.48")
-                            
-                            st.markdown("""
-                            **Interpretação:**
-                            - Pequena melhoria na acurácia (+5%)
-                            - O modelo ainda tem dificuldade em capturar padrões
-                            - Possíveis razões:
-                                - Complexidade da decisão médica
-                                - Fatores não capturados nos dados
-                                - Necessidade de mais features relevantes
-                            """)
-                        
-                        st.markdown("""
-                        ### 🎯 Conclusões Gerais
-                        
-                        1. **Previsão de Consultas:**
-                           - Modelo base já apresentava bom desempenho
-                           - Otimização pode ter levado a overfitting
-                           - Recomendação: usar modelo original para esta tarefa
-                        
-                        2. **Previsão de Tipo de Serviço:**
-                           - Melhor resultado entre as três tarefas
-                           - Otimização trouxe ganhos significativos
-                           - Recomendação: usar modelo otimizado
-                        
-                        3. **Previsão de Medicamentos:**
-                           - Tarefa mais desafiadora
-                           - Ganhos modestos com otimização
-                           - Recomendação: coletar mais dados e features relevantes
-                        """)
-                        
+                        plot_chart(
+                            fig=fig,
+                            title=f"Tendência de Demanda Futura - {regiao}",
+                            xlabel="Ano",
+                            ylabel="Demanda Total",
+                            xangle=0
+                        )
+                    
                 except Exception as e:
-                    st.error(f"❌ Erro ao fazer predições: {str(e)}")
+                    st.error(f"Erro ao realizar predições: {str(e)}")
     
     with tab3:
         st.subheader("📑 Dados Brutos")
