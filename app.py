@@ -20,9 +20,17 @@ def main():
     # Menu lateral
     st.sidebar.title("Menu")
     opcao = st.sidebar.selectbox(
-        "Selecione uma opção:",
+        "Escolha uma opção:",
         ["Página Inicial", "Treinamento de Modelos", "Realizar Predições"]
     )
+
+    # Submenu para Realizar Predições
+    submenu = None
+    if opcao == "Realizar Predições":
+        submenu = st.sidebar.selectbox(
+            "Escolha o tipo de análise:",
+            ["Fazer Predições", "📊 Visualizar Gráficos"]
+        )
     
     # Criar instância do modelo
     modelo = ModeloAutismo()
@@ -123,7 +131,14 @@ def main():
                 except Exception as e:
                     st.error(f"❌ Erro durante o treinamento: {str(e)}")
         else:
-            modelo.interface_predicao()
+            if submenu == "Fazer Predições":
+                if not modelo.modelos_existem():
+                    st.warning("⚠️ Os modelos ainda não foram treinados. Por favor, acesse a seção de Treinamento primeiro.")
+                else:
+                    modelo.interface_predicao()
+            elif submenu == "📊 Visualizar Gráficos":
+                from src.analises_visualizacoes import visualizar_graficos
+                visualizar_graficos()
 
 if __name__ == "__main__":
     # Criar diretório de modelos se não existir
