@@ -1,3 +1,5 @@
+LINK para o git: [https://github.com/BarbaraZamperete/DataScience-AutismBrasil](DataScience-AutismBrasil)
+
 # 🧩 Sistema de Análise de Autismo no Brasil
 
 Este projeto é uma aplicação de análise de dados aplicada à saúde, especificamente focada no autismo no Brasil. O sistema utiliza uma base de dados sintética gerada por algoritmos de machine learning para explorar características, padrões e realizar previsões relacionadas ao autismo no contexto brasileiro.
