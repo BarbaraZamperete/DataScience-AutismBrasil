@@ -102,7 +102,7 @@ O sistema analisa e simula dados relacionados ao autismo no Brasil, permitindo v
 
 1. Clone o repositório:
    ```
-   git clone https://github.com/seu-usuario/DataScience-AutismBrasil.git
+   git clone https://github.com/evertonstm/DataScience-AutismBrasil.git
    cd DataScience-AutismBrasil
    ```
 
@@ -117,7 +117,7 @@ O sistema analisa e simula dados relacionados ao autismo no Brasil, permitindo v
 
 1. Clone o repositório:
    ```
-   git clone https://github.com/seu-usuario/DataScience-AutismBrasil.git
+   git clone https://github.com/evertonstm/DataScience-AutismBrasil.git
    cd DataScience-AutismBrasil
    ```
 
