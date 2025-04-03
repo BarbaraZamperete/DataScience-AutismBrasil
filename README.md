@@ -7,6 +7,8 @@ Este projeto é uma aplicação de análise de dados aplicada à saúde, especif
 - [Funcionalidades](#funcionalidades)
 - [Tecnologias Utilizadas](#tecnologias-utilizadas)
 - [Instalação](#instalação)
+  - [Para Usuários Windows](#para-usuários-windows)
+  - [Para Usuários Linux/macOS](#para-usuários-linuxmacos)
 - [Como Usar](#como-usar)
 - [Estrutura do Projeto](#estrutura-do-projeto)
 - [Desenvolvedores](#desenvolvedores)
@@ -58,9 +60,45 @@ O sistema analisa e simula dados relacionados ao autismo no Brasil, permitindo v
 
 ## 💻 Instalação
 
-Existem duas formas de instalar e executar o projeto:
+### Para Usuários Windows
 
-### Usando script de inicialização
+#### Pré-requisitos
+- Python 3 instalado (se não tiver, [baixe aqui](https://www.python.org/downloads/windows/))
+  - Durante a instalação do Python, marque a opção "Add Python to PATH"
+
+#### Passo a passo para iniciantes
+1. **Baixe o projeto**:
+   - Clique no botão verde "Code" na página principal do repositório
+   - Escolha "Download ZIP"
+   - Extraia o arquivo ZIP para uma pasta de sua escolha (ex: Desktop ou Documentos)
+
+2. **Execute o programa**:
+   - Navegue até a pasta onde você extraiu os arquivos
+   - Encontre o arquivo `start.bat`
+   - Dê um duplo clique neste arquivo
+
+3. **O que acontecerá**:
+   - Uma janela preta (terminal) se abrirá
+   - O sistema verificará automaticamente se o seu computador tem tudo que precisa
+   - Se for a primeira vez, o sistema baixará alguns programas necessários
+   - Seu navegador será aberto automaticamente com a aplicação
+
+4. **Possíveis avisos e o que fazer**:
+   
+   **Aviso de segurança do Windows**: 
+   - Se aparecer um aviso de segurança, clique em "Mais informações" e depois em "Executar assim mesmo"
+   
+   **Solicitar permissão de administrador**:
+   - Se aparecer uma solicitação de permissão, clique em "Sim"
+
+   **Python não encontrado**:
+   - Se o sistema informar que o Python não foi encontrado, [instale o Python 3](https://www.python.org/downloads/windows/) e execute o arquivo `start.bat` novamente
+
+5. **Encerrar o programa**:
+   - Para finalizar o programa, feche o navegador e pressione Ctrl+C na janela preta (terminal)
+   - Depois, feche a janela preta
+
+### Para Usuários Linux/macOS
 
 1. Clone o repositório:
    ```
@@ -115,7 +153,8 @@ DataScience-AutismBrasil/
 ├── requirements.txt        # Dependências do projeto
 ├── Pipfile                 # Configuração do pipenv
 ├── Pipfile.lock            # Lock de dependências do pipenv
-├── start.sh                # Script de inicialização
+├── start.sh                # Script de inicialização para Linux/macOS
+├── start.bat               # Script de inicialização para Windows
 ├── modelos/                # Modelos treinados salvos
 ├── src/
 │   ├── analises_visualizacoes.py    # Código para visualizações
