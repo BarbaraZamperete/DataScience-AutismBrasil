@@ -1,8 +1,9 @@
 ## LINKs Útils:
 
-Deploy em Streamlit Community Cloud [https://datascience-autismbrasil.streamlit.app/] (acesso ao projeto na web)
-
 Para o git: [https://github.com/BarbaraZamperete/DataScience-AutismBrasil](DataScience-AutismBrasil)
+
+Deploy em Streamlit Community Cloud [https://datascience-autismbrasil.streamlit.app/] (acesso web)
+
 
 # 🧩 Sistema de Análise de Autismo no Brasil
 
